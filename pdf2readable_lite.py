@@ -50,6 +50,7 @@ def make_new_txt_file(pdf_path, lines, char_limit):
 
 
 def pdf_to_text(pdf_path, char_limit):
+    if ".pdf" not in pdf_path:return
     images = pdf_to_pil_images(pdf_path)
     lines = ""
     lines += f"Converting this pdf to text: {pdf_path}\n"

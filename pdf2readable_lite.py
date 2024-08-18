@@ -6,8 +6,14 @@ import io
 import time
 from tesseract import extract_text_from_image
 
+DEFUALT_CHAR_LIMIT = 30000
+
 
 def pdf_to_pil_images(pdf_path):
+    if ".pdf" not in pdf_path:
+        print("Invalid file type")
+        return
+
     # Open the PDF file
     pdf_document = fitz.open(pdf_path)
     images = []
@@ -25,9 +31,7 @@ def pdf_to_pil_images(pdf_path):
     return images
 
 
-
-
-def make_new_txt_file(pdf_path, lines,char_limit):
+def make_new_txt_file(pdf_path, lines, char_limit):
     def split_chars(chars, char_limit):
         group2lines = {}
         for i, char in enumerate(chars):
@@ -45,7 +49,7 @@ def make_new_txt_file(pdf_path, lines,char_limit):
             f.write(line_group)
 
 
-def pdf_to_text(pdf_path,char_limit):
+def pdf_to_text(pdf_path, char_limit):
     images = pdf_to_pil_images(pdf_path)
     lines = ""
     lines += f"Converting this pdf to text: {pdf_path}\n"
@@ -54,16 +58,16 @@ def pdf_to_text(pdf_path,char_limit):
         lines += f"Page {i+1}\n"
         lines += extract_text_from_image(image) + "\n"
         lines += "\n\n"
-    make_new_txt_file(pdf_path, lines,char_limit)
+    make_new_txt_file(pdf_path, lines, char_limit)
 
 
-def pdfs_to_text(pdf_folder_path,char_limit):
+def pdfs_to_text(pdf_folder_path, char_limit):
     files = os.listdir(pdf_folder_path)
     for file in files:
         print(f"\nConverting {file} to text")
         start_time = time.time()
         path = os.path.join(pdf_folder_path, file)
-        pdf_to_text(path,char_limit)
+        pdf_to_text(path, char_limit)
         time_taken = str(time.time() - start_time).split(".")[0]
         print(f"Converted {file} to text in {time_taken} seconds")
 
@@ -86,21 +90,17 @@ def get_char_input():
             inp = int(inp)
             return inp
         except:
-            print("not an int")
             pass
 
         if inp == "":
-            return 30000
-
-
-
+            return DEFUALT_CHAR_LIMIT
 
 
 def main():
     fp = get_folder_path()
-    char_limit=get_char_input()
+    char_limit = get_char_input()
 
-    pdfs_to_text(fp,char_limit)
+    pdfs_to_text(fp, char_limit)
 
 
 if __name__ == "__main__":

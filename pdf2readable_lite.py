@@ -10,6 +10,7 @@ DEFUALT_CHAR_LIMIT = 30000
 
 
 def pdf_to_pil_images(pdf_path):
+    pdf_path = pdf_path.replace("'",'').replace('"','')
     if ".pdf" not in pdf_path:
         print("Invalid file type")
         return
@@ -50,7 +51,8 @@ def make_new_txt_file(pdf_path, lines, char_limit):
 
 
 def pdf_to_text(pdf_path, char_limit):
-    if ".pdf" not in pdf_path:return
+    if ".pdf" not in pdf_path:
+        return
     images = pdf_to_pil_images(pdf_path)
     lines = ""
     lines += f"Converting this pdf to text: {pdf_path}\n"
@@ -83,6 +85,31 @@ def get_folder_path():
             s = "Invalid path. Try again: "
 
 
+def get_file_path():
+    s = "Enter a path containing a PDF: "
+    while 1:
+        path = input(s)
+        if ".pdf" in path:
+            return path.replace('"','')
+        else:
+            s = "Invalid path. Try again: "
+
+
+def get_input_type_input():
+    s = "Select an input type:\n\t1) Folder\n\t2) File\n"
+    while 1:
+        inp = input(s)
+        try:
+            inp = int(inp)
+            if inp in [1, 2]:
+                if inp == 1:
+                    return "Folder"
+                else:
+                    return "File"
+        except:
+            pass
+
+
 def get_char_input():
     s = "Character limit: "
     while 1:
@@ -98,10 +125,15 @@ def get_char_input():
 
 
 def main():
-    fp = get_folder_path()
+    print('\n'*50)
+    print('')
     char_limit = get_char_input()
-
-    pdfs_to_text(fp, char_limit)
+    input_type = get_input_type_input()
+    if input_type == "Folder":
+        fp = get_folder_path()
+        pdfs_to_text(fp, char_limit)
+    else:
+        pdf_to_text(get_file_path(), char_limit)
 
 
 if __name__ == "__main__":
